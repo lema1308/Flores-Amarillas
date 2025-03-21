@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramo de Flores Amarillas</title>
+    <style>
+        body {
+            background-color: deepskyblue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<!-- Agregar música de fondo -->
+<audio id="music" autoplay loop>
+    <source src="cancion.mp3" type="audio/mp3">
+    Tu navegador no soporta la etiqueta de audio.
+    <button onclick="document.getElementById('music').play()">Reproducir Música</button>
+
+    <script>
+        document.body.addEventListener('click', function() {
+            document.getElementById('music').play();
+        }, { once: true });
+    </script>
+</audio>
+
+<canvas id="canvas" width="800" height="600"></canvas>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function dibujarPetalos(x, y) {
+        let gradiente = ctx.createRadialGradient(x, y, 15, x, y, 40);
+        gradiente.addColorStop(0, "yellow");
+        gradiente.addColorStop(1, "gold");
+
+        ctx.beginPath();
+        ctx.ellipse(x, y, 30, 50, Math.PI / 3, 0, Math.PI * 2);
+        ctx.fillStyle = gradiente;
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function dibujarFlor(x, y) {
+        ctx.save();
+        ctx.translate(x, y);
+
+        for (let i = 0; i < 8; i++) {
+            let angulo = (Math.PI * 2) / 8 * i;
+            let offsetX = Math.cos(angulo) * 40;
+            let offsetY = Math.sin(angulo) * 40;
+            dibujarPetalos(offsetX, offsetY);
+        }
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+        ctx.fillStyle = "darkorange";
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.restore();
+    }
+
+    function dibujarTallo(x, y) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + 150);
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "green";
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    function dibujarHojas(x, y) {
+        ctx.beginPath();
+        ctx.moveTo(x - 20, y + 50);
+        ctx.quadraticCurveTo(x - 50, y + 80, x - 20, y + 110);
+        ctx.quadraticCurveTo(x - 10, y + 90, x - 20, y + 50);
+        ctx.fillStyle = "darkgreen";
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.moveTo(x + 20, y + 50);
+        ctx.quadraticCurveTo(x + 50, y + 80, x + 20, y + 110);
+        ctx.quadraticCurveTo(x + 10, y + 90, x + 20, y + 50);
+        ctx.fillStyle = "darkgreen";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function escribirMensaje() {
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "gold";
+        ctx.textAlign = "center";
+        ctx.fillText("🌟 Jamás serás espectadora, princesa 🌟", canvas.width / 2, canvas.height - 30);
+    }
+
+    function dibujarRamo() {
+        const posiciones = [
+            {x: canvas.width / 2 - 200, y: canvas.height - 220},
+            {x: canvas.width / 2 - 100, y: canvas.height - 210},
+            {x: canvas.width / 2, y: canvas.height - 230},
+            {x: canvas.width / 2 + 100, y: canvas.height - 230},
+            {x: canvas.width / 2 + 200, y: canvas.height - 210}
+        ];
+
+        for (let pos of posiciones) {
+            dibujarFlor(pos.x, pos.y);
+            dibujarTallo(pos.x, pos.y);
+            dibujarHojas(pos.x, pos.y);
+        }
+    }
+
+    function dibujarFondo() {
+        let gradienteCielo = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradienteCielo.addColorStop(0, "deepskyblue");
+        gradienteCielo.addColorStop(1, "lightblue");
+        ctx.fillStyle = gradienteCielo;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let gradienteCesped = ctx.createLinearGradient(0, canvas.height - 100, 0, canvas.height);
+        gradienteCesped.addColorStop(0, "forestgreen");
+        gradienteCesped.addColorStop(1, "darkgreen");
+        ctx.fillStyle = gradienteCesped;
+        ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
+
+        ctx.fillStyle = "white";
+        for (let i = 0; i < 3; i++) {
+            let x = canvas.width / 4 + i * 200;
+            let y = 80 + Math.random() * 40;
+            ctx.beginPath();
+            ctx.arc(x, y, 30, 0, Math.PI * 2);
+            ctx.arc(x + 40, y - 10, 35, 0, Math.PI * 2);
+            ctx.arc(x + 80, y, 30, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function dibujar() {
+        dibujarFondo();
+        dibujarRamo();
+        escribirMensaje();
+    }
+
+    dibujar();
+</script>
+</body>
+</html>
